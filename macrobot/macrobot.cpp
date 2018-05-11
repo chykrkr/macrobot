@@ -25,7 +25,6 @@ static map<string, DWORD> keymap = {
 	{ "VK_DOWN",	VK_DOWN },
 	{ "VK_LEFT",	VK_LEFT },
 	{ "VK_RIGHT",	VK_RIGHT },
-
 };
 
 static int mouseLeftClick(lua_State * L)
@@ -98,7 +97,7 @@ static int keyStroke(lua_State * L)
 	if (ret < 1) {
 		return 0;
 	}
-	
+
 	ZeroMemory(&ip, sizeof(INPUT));
 
 	ip.type = INPUT_KEYBOARD;
@@ -195,7 +194,7 @@ void MacroBot::regFuncs()
 	lua_register(L, "sleep", sleep);
 	lua_register(L, "setcursor", setcursor);
 	lua_register(L, "readcursor", readcursor);
-	
+
 	//test
 	lua_register(L, "average", average);
 }
