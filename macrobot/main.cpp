@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "MacroBot.h"
 
 int main(int argc, char * argv[])

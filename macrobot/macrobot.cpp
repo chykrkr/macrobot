@@ -25,6 +25,7 @@ static map<string, DWORD> keymap = {
 	{ "VK_DOWN",	VK_DOWN },
 	{ "VK_LEFT",	VK_LEFT },
 	{ "VK_RIGHT",	VK_RIGHT },
+
 };
 
 static int mouseLeftClick(lua_State * L)
