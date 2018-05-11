@@ -3,13 +3,21 @@ tdelay = 13000
 
 print("twait = ", twait, ", tdelay = ", tdelay)
 
+x, y = readcursor();
+
+print("x = ", x, ", y = ", y);
+
 print("Sleeping ...")
 
 sleep(twait)
 
 print("Go")
 
+
+
 while true do
+	setcursor(x, y);
+
 	print("Left click");
 	left_click();
 
