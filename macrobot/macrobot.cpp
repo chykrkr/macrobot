@@ -218,3 +218,8 @@ void MacroBot::doFile(char * script_file)
 {
 	luaL_dofile(L, script_file);
 }
+
+void MacroBot::doString(char * string)
+{
+	luaL_dostring(L, string);
+}

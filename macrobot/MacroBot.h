@@ -24,5 +24,6 @@ public:
 	~MacroBot();
 
 	void doFile(char * script_file);
+	void doString(char * string);
 };
 
