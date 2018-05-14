@@ -45,6 +45,8 @@ static map<string, DWORD> keymap = {
 	{ "VK_DOWN",	VK_DOWN },
 	{ "VK_LEFT",	VK_LEFT },
 	{ "VK_RIGHT",	VK_RIGHT },
+	{ "VK_SHIFT",	VK_SHIFT },
+	{ "VK_LSHIFT",	VK_LSHIFT },
 };
 
 static map<char, DWORD> charToVk = {
@@ -263,6 +265,8 @@ static int keyStroke(lua_State * L)
 	const char * key_name;
 	map<string, DWORD>::iterator it;
 	int ret;
+	KeyAction action = KeyAction::STROKE;
+	const char * action_name;
 
 	/* get number of arguments */
 	int n = lua_gettop(L);
@@ -289,6 +293,24 @@ static int keyStroke(lua_State * L)
 		return 0;
 	}
 
+	if (n >= 2)
+		action_name = lua_tostring(L, 2);
+	else
+		action_name = NULL;
+
+	if (action_name == NULL) {
+		action = KeyAction::STROKE;
+	}
+	else if (_strnicmp(action_name, "DOWN", strlen("DOWN")) == 0) {
+		action = KeyAction::DOWN;
+	}
+	else if (_strnicmp(action_name, "UP", strlen("UP")) == 0) {
+		action = KeyAction::UP;
+	}
+	else {
+		action = KeyAction::UNDEFINED;
+	}
+
 	ZeroMemory(&ip, sizeof(INPUT));
 
 	ip.type = INPUT_KEYBOARD;
@@ -296,14 +318,19 @@ static int keyStroke(lua_State * L)
 	ip.ki.time = 0;
 	ip.ki.dwExtraInfo = 0;
 
-	//press
 	ip.ki.wVk = vk;
-	ip.ki.dwFlags = 0;
-	SendInput(1, &ip, sizeof(INPUT));
+
+	//press
+	if (action == KeyAction::DOWN || action == KeyAction::STROKE) {
+		ip.ki.dwFlags = 0;
+		SendInput(1, &ip, sizeof(INPUT));
+	}
 
 	//release
-	ip.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &ip, sizeof(INPUT));
+	if (action == KeyAction::UP || action == KeyAction::STROKE) {
+		ip.ki.dwFlags = KEYEVENTF_KEYUP;
+		SendInput(1, &ip, sizeof(INPUT));
+	}
 
 	return 0;
 }
