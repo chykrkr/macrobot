@@ -39,7 +39,7 @@ enum class KeyAction {
 	STROKE,
 };
 
-static map<string, DWORD> keymap = {
+static map<string, WORD> keymap = {
 	{ "VK_RETURN",	VK_RETURN },
 	{ "VK_UP",		VK_UP },
 	{ "VK_DOWN",	VK_DOWN },
@@ -47,46 +47,129 @@ static map<string, DWORD> keymap = {
 	{ "VK_RIGHT",	VK_RIGHT },
 	{ "VK_SHIFT",	VK_SHIFT },
 	{ "VK_LSHIFT",	VK_LSHIFT },
+	{ "VK_CAPITAL",	VK_CAPITAL },
+	{ "VK_NUMLOCK", VK_NUMLOCK },
+	{ "VK_SCROLL",	VK_SCROLL },
+	{ "VK_BACK",	VK_BACK },
+	{ "VK_TAB",		VK_TAB },
+	{ "VK_CLEAR",	VK_CLEAR },
+	{ "VK_ESCAPE",	VK_ESCAPE },
+	{ "VK_DELETE",	VK_DELETE },
 };
 
-static map<char, DWORD> charToVk = {
-	{ '0',	0x30 },
-	{ '1',	0x31 },
-	{ '2',	0x32 },
-	{ '3',	0x33 },
-	{ '4',	0x34 },
-	{ '5',	0x35 },
-	{ '6',	0x36 },
-	{ '7',	0x37 },
-	{ '8',	0x38 },
-	{ '9',	0x39 },
+static map<string, WORD> toggleKey = {
+	{ "VK_CAPITAL",	VK_CAPITAL },
+	{ "VK_NUMLOCK", VK_NUMLOCK },
+	{ "VK_SCROLL", VK_SCROLL },
+};
 
-	{ 'a',	0x41 },
-	{ 'b',	0x42 },
-	{ 'c',	0x43 },
-	{ 'd',	0x44 },
-	{ 'e',	0x45 },
-	{ 'f',	0x46 },
-	{ 'g',	0x47 },
-	{ 'h',	0x48 },
-	{ 'i',	0x49 },
-	{ 'j',	0x4A },
-	{ 'k',	0x4B },
-	{ 'l',	0x4C },
-	{ 'm',	0x4D },
-	{ 'n',	0x4E },
-	{ 'o',	0x4F },
-	{ 'p',	0x50 },
-	{ 'q',	0x51 },
-	{ 'r',	0x52 },
-	{ 's',	0x53 },
-	{ 't',	0x54 },
-	{ 'u',	0x55 },
-	{ 'v',	0x56 },
-	{ 'w',	0x57 },
-	{ 'x',	0x58 },
-	{ 'y',	0x59 },
-	{ 'z',	0x5A },
+typedef struct tagCharProperty {
+	WORD   type;
+	int		shift;
+} CharProperty;
+
+static map<char, CharProperty>  charToVK = {
+	/* alpha set */
+	{ 'a',	{ 0x41, 0 } },
+	{ 'b',	{ 0x42, 0 } },
+	{ 'c',	{ 0x43, 0 } },
+	{ 'd',	{ 0x44, 0 } },
+	{ 'e',	{ 0x45, 0 } },
+	{ 'f',	{ 0x46, 0 } },
+	{ 'g',	{ 0x47, 0 } },
+	{ 'h',	{ 0x48, 0 } },
+	{ 'i',	{ 0x49, 0 } },
+	{ 'j',	{ 0x4A, 0 } },
+	{ 'k',	{ 0x4B, 0 } },
+	{ 'l',	{ 0x4C, 0 } },
+	{ 'm',	{ 0x4D, 0 } },
+	{ 'n',	{ 0x4E, 0 } },
+	{ 'o',	{ 0x4F, 0 } },
+	{ 'p',	{ 0x50, 0 } },
+	{ 'q',	{ 0x51, 0 } },
+	{ 'r',	{ 0x52, 0 } },
+	{ 's',	{ 0x53, 0 } },
+	{ 't',	{ 0x54, 0 } },
+	{ 'u',	{ 0x55, 0 } },
+	{ 'v',	{ 0x56, 0 } },
+	{ 'w',	{ 0x57, 0 } },
+	{ 'x',	{ 0x58, 0 } },
+	{ 'y',	{ 0x59, 0 } },
+	{ 'z',	{ 0x5A, 0 } },
+
+	/* alpha capital set*/
+	{ 'A',	{ 0x41, 1 } },
+	{ 'B',	{ 0x42, 1 } },
+	{ 'C',	{ 0x43, 1 } },
+	{ 'D',	{ 0x44, 1 } },
+	{ 'E',	{ 0x45, 1 } },
+	{ 'F',	{ 0x46, 1 } },
+	{ 'G',	{ 0x47, 1 } },
+	{ 'H',	{ 0x48, 1 } },
+	{ 'I',	{ 0x49, 1 } },
+	{ 'J',	{ 0x4A, 1 } },
+	{ 'K',	{ 0x4B, 1 } },
+	{ 'L',	{ 0x4C, 1 } },
+	{ 'M',	{ 0x4D, 1 } },
+	{ 'N',	{ 0x4E, 1 } },
+	{ 'O',	{ 0x4F, 1 } },
+	{ 'P',	{ 0x50, 1 } },
+	{ 'Q',	{ 0x51, 1 } },
+	{ 'R',	{ 0x52, 1 } },
+	{ 'S',	{ 0x53, 1 } },
+	{ 'T',	{ 0x54, 1 } },
+	{ 'U',	{ 0x55, 1 } },
+	{ 'V',	{ 0x56, 1 } },
+	{ 'W',	{ 0x57, 1 } },
+	{ 'X',	{ 0x58, 1 } },
+	{ 'Y',	{ 0x59, 1 } },
+	{ 'Z',	{ 0x5A, 1 } },
+
+	/* non-alpha set */
+	{ '0',	{ 0x30, 0 } },
+	{ '1',	{ 0x31, 0 } },
+	{ '2',	{ 0x32, 0 } },
+	{ '3',	{ 0x33, 0 } },
+	{ '4',	{ 0x34, 0 } },
+	{ '5',	{ 0x35, 0 } },
+	{ '6',	{ 0x36, 0 } },
+	{ '7',	{ 0x37, 0 } },
+	{ '8',	{ 0x38, 0 } },
+	{ '9',	{ 0x39, 0 } },
+	{ '-',	{ VK_OEM_MINUS, 0 } },
+	{ '=',	{ VK_OEM_PLUS, 0} },
+	{ '\\',	{ VK_OEM_5, 0} },
+	{ '[',	{ VK_OEM_4, 0} },
+	{ ']',	{ VK_OEM_6, 0} },
+	{ ';',	{ VK_OEM_1, 0} },
+	{ '\'',	{ VK_OEM_7, 0} },
+	{ ',',	{ VK_OEM_COMMA, 0} },
+	{ '.',	{ VK_OEM_PERIOD, 0} },
+	{ '/',	{ VK_OEM_2, 0} },
+	{ '`',	{ VK_OEM_3, 0} },
+
+	/* non-alpha set with shift */
+	{ ')',	{ 0x30, 1} },
+	{ '!',	{ 0x31, 1} },
+	{ '@',	{ 0x32, 1} },
+	{ '#',	{ 0x33, 1} },
+	{ '$',	{ 0x34, 1} },
+	{ '%',	{ 0x35, 1} },
+	{ '^',	{ 0x36, 1} },
+	{ '&',	{ 0x37, 1} },
+	{ '*',	{ 0x38, 1} },
+	{ '(',	{ 0x39, 1} },
+	{ '_',	{ VK_OEM_MINUS, 1} },
+	{ '+',	{ VK_OEM_PLUS, 1} },
+	{ '|',	{ VK_OEM_5, 1} },
+	{ '{',	{ VK_OEM_4, 1} },
+	{ '}',	{ VK_OEM_6, 1} },
+	{ ':',	{ VK_OEM_1, 1} },
+	{ '"',	{ VK_OEM_7, 1} },
+	{ '<',	{ VK_OEM_COMMA, 1} },
+	{ '>',	{ VK_OEM_PERIOD, 1} },
+	{ '?',	{ VK_OEM_2, 1} },
+	{ '~',	{ VK_OEM_3, 1} },
 };
 
 static void mouseEvent(DWORD dwFlags)
@@ -214,8 +297,8 @@ static int mouse_move(lua_State *L)
 	if (n < 2)
 		return 0;
 
-	x = lua_tonumber(L, 1);
-	y = lua_tonumber(L, 2);
+	x = (LONG) lua_tonumber(L, 1);
+	y = (LONG) lua_tonumber(L, 2);
 
 	/* get number of arguments */
 	INPUT ip;
@@ -240,8 +323,8 @@ static int mouse_move_rel(lua_State *L)
 	if (n < 2)
 		return 0;
 
-	x = lua_tonumber(L, 1);
-	y = lua_tonumber(L, 2);
+	x = (LONG) lua_tonumber(L, 1);
+	y = (LONG) lua_tonumber(L, 2);
 
 	/* get number of arguments */
 	INPUT ip;
@@ -258,12 +341,32 @@ static int mouse_move_rel(lua_State *L)
 	return 0;
 }
 
+static int getVkFromStr(const char * key_name, DWORD & vk)
+{
+	int ret;
+	map<string, WORD>::iterator it;
+
+	if (key_name == NULL)
+		return -1;
+
+	it = keymap.find(key_name);
+
+	if (it == keymap.end()) {
+		ret = sscanf_s(key_name, "%2x", &vk);
+	}
+	else {
+		vk = it->second;
+		ret = 1;
+	}
+
+	return ret;
+}
+
 static int keyStroke(lua_State * L)
 {
 	DWORD vk = 0x00;
 	INPUT ip;
 	const char * key_name;
-	map<string, DWORD>::iterator it;
 	int ret;
 	KeyAction action = KeyAction::STROKE;
 	const char * action_name;
@@ -279,15 +382,7 @@ static int keyStroke(lua_State * L)
 	if (key_name == NULL)
 		return 0;
 
-	it = keymap.find(key_name);
-
-	if (it == keymap.end()) {
-		ret = sscanf_s(key_name, "%2x", &vk);
-	}
-	else {
-		vk = it->second;
-		ret = 1;
-	}
+	ret = getVkFromStr(key_name, vk);
 
 	if (ret < 1) {
 		return 0;
@@ -318,7 +413,7 @@ static int keyStroke(lua_State * L)
 	ip.ki.time = 0;
 	ip.ki.dwExtraInfo = 0;
 
-	ip.ki.wVk = vk;
+	ip.ki.wVk = (WORD) vk;
 
 	//press
 	if (action == KeyAction::DOWN || action == KeyAction::STROKE) {
@@ -335,14 +430,43 @@ static int keyStroke(lua_State * L)
 	return 0;
 }
 
-static int keyType(lua_State * L)
+
+static void typeVk(INPUT & ip, int shift, WORD vk)
+{
+	//shift-down
+	if (shift) {
+		ip.ki.wVk = VK_LSHIFT;
+		ip.ki.dwFlags = 0;
+		SendInput(1, &ip, sizeof(INPUT));
+	}
+
+	//press
+	ip.ki.wVk = vk;
+	ip.ki.dwFlags = 0;
+	SendInput(1, &ip, sizeof(INPUT));
+
+	//release
+	ip.ki.wVk = vk;
+	ip.ki.dwFlags = KEYEVENTF_KEYUP;
+	SendInput(1, &ip, sizeof(INPUT));
+
+	//shift-up
+	if (shift) {
+		ip.ki.wVk = VK_LSHIFT;
+		ip.ki.dwFlags = KEYEVENTF_KEYUP;
+		SendInput(1, &ip, sizeof(INPUT));
+	}
+}
+
+static int typeString(lua_State * L)
 {
 	DWORD vk = 0x00;
 	INPUT ip;
 	const char * key_name;
 	char c;
-	map<char, DWORD>::iterator it;
-	int ret;
+	map<char, CharProperty>::iterator it;
+	int shift = 0;
+	CharProperty prop;
 
 	/* get number of arguments */
 	int n = lua_gettop(L);
@@ -365,21 +489,15 @@ static int keyType(lua_State * L)
 	for (int i = 0; key_name[i] != '\x0'; i++) {
 		c = key_name[i];
 
-		it = charToVk.find(c);
+		//search alphaset
+		it = charToVK.find(c);
 
-		if (it == charToVk.end())
+		if (it == charToVK.end())
 			continue;
 
-		vk = it->second;
+		prop = it->second;
 
-		//press
-		ip.ki.wVk = vk;
-		ip.ki.dwFlags = 0;
-		SendInput(1, &ip, sizeof(INPUT));
-
-		//release
-		ip.ki.dwFlags = KEYEVENTF_KEYUP;
-		SendInput(1, &ip, sizeof(INPUT));
+		typeVk(ip, prop.shift, prop.type);
 	}
 
 	return 0;
@@ -410,8 +528,8 @@ static int setcursor(lua_State *L)
 	if (n < 2)
 		return 0;
 
-	x = lua_tonumber(L, 1);
-	y = lua_tonumber(L, 2);
+	x = (int) lua_tonumber(L, 1);
+	y = (int) lua_tonumber(L, 2);
 
 	SetCursorPos(x, y);
 
@@ -441,8 +559,8 @@ static int movecursor(lua_State *L)
 
 	GetCursorPos(&pt);
 
-	pt.x += lua_tointeger(L, 1);
-	pt.y += lua_tointeger(L, 2);
+	pt.x += (LONG) lua_tointeger(L, 1);
+	pt.y += (LONG) lua_tointeger(L, 2);
 
 	SetCursorPos(pt.x, pt.y);
 
@@ -493,6 +611,87 @@ int docmd(lua_State *L)
 	return 0;
 }
 
+int keyon(lua_State *L)
+{
+	const char * key_name;
+	map<string, WORD>::iterator it;
+	int onoff;
+	int toggle;
+	WORD vk;
+	SHORT state;
+	INPUT ip;
+
+	/* get number of arguments */
+	int n = lua_gettop(L);
+
+	if (n < 2)
+		return 0;
+
+	key_name = lua_tostring(L, 1);
+	/* insure 0 or 1 */
+	onoff = !!lua_toboolean(L, 2);
+
+	if (key_name == NULL)
+		return 0;
+
+	it = toggleKey.find(key_name);
+
+	if (it == toggleKey.end())
+		return 0;
+
+	vk =it->second;
+
+	state = GetKeyState(vk);
+
+	toggle = !!(state & 0x00FF);
+
+	if (onoff == toggle)
+		return 0;
+
+	ZeroMemory(&ip, sizeof(INPUT));
+
+	ip.type = INPUT_KEYBOARD;
+	ip.ki.wScan = 0;
+	ip.ki.time = 0;
+	ip.ki.dwExtraInfo = 0;
+
+	typeVk(ip, 0, vk);
+
+	return 0;
+}
+
+int readykey(lua_State *L)
+{
+	SHORT state;
+	DWORD vk;
+	int ret;
+	const char * key_name;
+
+	/* get number of arguments */
+	int n = lua_gettop(L);
+
+	if (n < 1)
+		return 0;
+
+	key_name = lua_tostring(L, 1);
+
+	ret = getVkFromStr(key_name, vk);
+
+	if (ret < 1)
+		return 0;
+
+
+	state = GetKeyState(vk);
+
+	/* up/down */
+	lua_pushinteger(L, (state & 0xFF00) >> 8);
+
+	/* toggle */
+	lua_pushinteger(L, state & 0x00FF);
+
+	return 2;
+}
+
 void MacroBot::regFuncs()
 {
 	lua_register(L, "left_click", mouseLeftClick);
@@ -501,12 +700,14 @@ void MacroBot::regFuncs()
 	lua_register(L, "mouse_move", mouse_move);
 	lua_register(L, "mouse_move_rel", mouse_move_rel);
 	lua_register(L, "key", keyStroke);
-	lua_register(L, "type", keyType);
+	lua_register(L, "type", typeString);
 	lua_register(L, "sleep", sleep);
 	lua_register(L, "setcursor", setcursor);
 	lua_register(L, "readcursor", readcursor);
 	lua_register(L, "movecursor", movecursor);
 	lua_register(L, "docmd", docmd);
+	lua_register(L, "keyon", keyon);
+	lua_register(L, "readkey", readykey);
 
 	//test
 	lua_register(L, "average", average);
