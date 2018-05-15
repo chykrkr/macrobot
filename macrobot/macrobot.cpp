@@ -13,35 +13,9 @@
 #include "lauxlib.h"
 #endif
 
-#include <map>
-#include <string>
-
-using std::map;
-using std::string;
-
-enum class MouseButton {
-	UNDEFINED,
-	LEFT,
-	RIGHT,
-};
-
-enum class MouseAction {
-	UNDEFINED,
-	UP,
-	DOWN,
-	CLICK,
-};
-
-enum class KeyAction {
-	UNDEFINED,
-	UP,
-	DOWN,
-	STROKE,
-};
-
-static map<string, WORD> keymap = {
+const map<string, WORD> MacroBot::keymap = {
 	{ "VK_RETURN",	VK_RETURN },
-	{ "VK_UP",		VK_UP },
+	{ "VK_UP",	VK_UP },
 	{ "VK_DOWN",	VK_DOWN },
 	{ "VK_LEFT",	VK_LEFT },
 	{ "VK_RIGHT",	VK_RIGHT },
@@ -51,24 +25,19 @@ static map<string, WORD> keymap = {
 	{ "VK_NUMLOCK", VK_NUMLOCK },
 	{ "VK_SCROLL",	VK_SCROLL },
 	{ "VK_BACK",	VK_BACK },
-	{ "VK_TAB",		VK_TAB },
+	{ "VK_TAB",	VK_TAB },
 	{ "VK_CLEAR",	VK_CLEAR },
 	{ "VK_ESCAPE",	VK_ESCAPE },
 	{ "VK_DELETE",	VK_DELETE },
 };
 
-static map<string, WORD> toggleKey = {
+const map<string, WORD> MacroBot::toggleKey = {
 	{ "VK_CAPITAL",	VK_CAPITAL },
 	{ "VK_NUMLOCK", VK_NUMLOCK },
-	{ "VK_SCROLL", VK_SCROLL },
+	{ "VK_SCROLL",	VK_SCROLL },
 };
 
-typedef struct tagCharProperty {
-	WORD   type;
-	int		shift;
-} CharProperty;
-
-static map<char, CharProperty>  charToVK = {
+const map<char, CharProperty> MacroBot::charToVK = {
 	/* alpha set */
 	{ 'a',	{ 0x41, 0 } },
 	{ 'b',	{ 0x42, 0 } },
@@ -174,7 +143,7 @@ static map<char, CharProperty>  charToVK = {
 	{ '~',	{ VK_OEM_3, 1} },
 };
 
-static void mouseEvent(DWORD dwFlags)
+void MacroBot::mouseEvent(DWORD dwFlags)
 {
 	/* get number of arguments */
 	INPUT ip;
@@ -187,7 +156,7 @@ static void mouseEvent(DWORD dwFlags)
 	SendInput(1, &ip, sizeof(INPUT));
 }
 
-static int mouseLeftClick(lua_State * L)
+int MacroBot::mouseLeftClick(lua_State * L)
 {
 	/* get number of arguments */
 	INPUT ip;
@@ -206,7 +175,7 @@ static int mouseLeftClick(lua_State * L)
 	return 0;
 }
 
-static int mouseRightClick(lua_State * L)
+int MacroBot::mouseRightClick(lua_State * L)
 {
 	/* get number of arguments */
 	INPUT ip;
@@ -227,7 +196,7 @@ static int mouseRightClick(lua_State * L)
 
 
 
-static int mouse(lua_State * L)
+int MacroBot::mouse(lua_State * L)
 {
 	MouseButton ebutton = MouseButton::UNDEFINED;
 	MouseAction eaction = MouseAction::UNDEFINED;
@@ -291,7 +260,7 @@ static int mouse(lua_State * L)
 	return 0;
 }
 
-static int mouse_move(lua_State *L)
+int MacroBot::mouse_move(lua_State *L)
 {
 	int n = lua_gettop(L);
 	LONG x, y;
@@ -317,7 +286,7 @@ static int mouse_move(lua_State *L)
 	return 0;
 }
 
-static int mouse_move_rel(lua_State *L)
+int MacroBot::mouse_move_rel(lua_State *L)
 {
 	int n = lua_gettop(L);
 	LONG x, y;
@@ -343,10 +312,10 @@ static int mouse_move_rel(lua_State *L)
 	return 0;
 }
 
-static int getVkFromStr(const char * key_name, DWORD & vk)
+int MacroBot::getVkFromStr(const char * key_name, DWORD & vk)
 {
 	int ret;
-	map<string, WORD>::iterator it;
+	map<string, WORD>::const_iterator it;
 
 	if (key_name == NULL)
 		return -1;
@@ -364,7 +333,7 @@ static int getVkFromStr(const char * key_name, DWORD & vk)
 	return ret;
 }
 
-static int keyStroke(lua_State * L)
+int MacroBot::keyStroke(lua_State * L)
 {
 	DWORD vk = 0x00;
 	INPUT ip;
@@ -432,8 +401,7 @@ static int keyStroke(lua_State * L)
 	return 0;
 }
 
-
-static void typeVk(INPUT & ip, int shift, WORD vk)
+void MacroBot::typeVk(INPUT & ip, int shift, WORD vk)
 {
 	//shift-down
 	if (shift) {
@@ -460,13 +428,13 @@ static void typeVk(INPUT & ip, int shift, WORD vk)
 	}
 }
 
-static int typeString(lua_State * L)
+int MacroBot::typeString(lua_State * L)
 {
 	DWORD vk = 0x00;
 	INPUT ip;
 	const char * key_name;
 	char c;
-	map<char, CharProperty>::iterator it;
+	map<char, CharProperty>::const_iterator it;
 	int shift = 0;
 	CharProperty prop;
 
@@ -505,7 +473,7 @@ static int typeString(lua_State * L)
 	return 0;
 }
 
-static int sleep(lua_State * L)
+int MacroBot::sleep(lua_State * L)
 {
 	DWORD t;
 
@@ -522,7 +490,7 @@ static int sleep(lua_State * L)
 	return 0;
 }
 
-static int setcursor(lua_State *L)
+int MacroBot::setcursor(lua_State *L)
 {
 	int n = lua_gettop(L);
 	int x, y;
@@ -538,7 +506,7 @@ static int setcursor(lua_State *L)
 	return 0;
 }
 
-static int readcursor(lua_State *L)
+int MacroBot::readcursor(lua_State *L)
 {
 	POINT pt;
 
@@ -550,7 +518,7 @@ static int readcursor(lua_State *L)
 	return 2;
 }
 
-static int movecursor(lua_State *L)
+int MacroBot::movecursor(lua_State *L)
 {
 	POINT pt;
 
@@ -569,31 +537,7 @@ static int movecursor(lua_State *L)
 	return 0;
 }
 
-int average(lua_State *L)
-{
-	/* get number of arguments */
-	int n = lua_gettop(L);
-	double sum = 0;
-	int i;
-
-	/* loop through each argument */
-	for (i = 1; i <= n; i++)
-	{
-		/* total the arguments */
-		sum += lua_tonumber(L, i);
-	}
-
-	/* push the average */
-	lua_pushnumber(L, sum / n);
-
-	/* push the sum */
-	lua_pushnumber(L, sum);
-
-	/* return the number of results */
-	return 2;
-}
-
-int docmd(lua_State *L)
+int MacroBot::docmd(lua_State *L)
 {
 	const char * cmd;
 
@@ -613,10 +557,10 @@ int docmd(lua_State *L)
 	return 0;
 }
 
-int keyon(lua_State *L)
+int MacroBot::keyon(lua_State *L)
 {
 	const char * key_name;
-	map<string, WORD>::iterator it;
+	map<string, WORD>::const_iterator it;
 	int onoff;
 	int toggle;
 	WORD vk;
@@ -662,7 +606,7 @@ int keyon(lua_State *L)
 	return 0;
 }
 
-int readykey(lua_State *L)
+int MacroBot::readkey(lua_State *L)
 {
 	SHORT state;
 	DWORD vk;
@@ -709,10 +653,7 @@ void MacroBot::regFuncs()
 	lua_register(L, "movecursor", movecursor);
 	lua_register(L, "docmd", docmd);
 	lua_register(L, "keyon", keyon);
-	lua_register(L, "readkey", readykey);
-
-	//test
-	lua_register(L, "average", average);
+	lua_register(L, "readkey", readkey);
 }
 
 MacroBot::MacroBot()

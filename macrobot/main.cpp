@@ -18,7 +18,7 @@ int handleStdin(char ** buf)
 
 	std::cin.getline(data, BUFF_SIZE);
 
-	count = strlen(data);
+	count = (int) strlen(data);
 
 	printf("[%d]\n", count);
 	printf("[%s]\n", data);
