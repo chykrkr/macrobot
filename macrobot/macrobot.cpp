@@ -126,6 +126,8 @@ static map<char, CharProperty>  charToVK = {
 	{ 'Z',	{ 0x5A, 1 } },
 
 	/* non-alpha set */
+	{ '\t', { VK_TAB, 0 } },
+	{ ' ',	{ VK_SPACE, 0 } },
 	{ '0',	{ 0x30, 0 } },
 	{ '1',	{ 0x31, 0 } },
 	{ '2',	{ 0x32, 0 } },
