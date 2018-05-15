@@ -1,3 +1,6 @@
+-- click and type enter repeatedly
+-- Initial cursor position is remembered and restored to that position before every click
+
 twait = 3000
 tdelay = 13000
 
