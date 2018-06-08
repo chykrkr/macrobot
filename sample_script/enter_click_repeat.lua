@@ -16,19 +16,32 @@ sleep(twait)
 
 print("Go")
 
+setcursor(x, y);
 
+print("Left click");
+left_click();
+
+hwnd = 0;
+
+while hwnd == 0 do
+	sleep(500);
+	hwnd = get_foreground_wnd();
+	print(string.format("%X", hwnd));
+end
+
+sleep(tdelay);
 
 while true do
+	set_foreground_wnd(hwnd);
 	setcursor(x, y);
 
-	print("Left click");
-	left_click();
-
-	print("sleep for ", tdelay);
-	sleep(tdelay);
-
-	print("Enter");
-	key("VK_RETURN");
+	if hwnd == get_foreground_wnd() then
+		print("Left click");
+		left_click();
+	else
+		print("Enter");
+		key("VK_RETURN");
+	end
 
 	print("sleep for ", tdelay);
 	sleep(tdelay);

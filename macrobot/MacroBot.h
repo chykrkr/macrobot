@@ -72,6 +72,8 @@ private:
 	static int docmd(lua_State *L);
 	static int keyon(lua_State *L);
 	static int readkey(lua_State *L);
+	static int get_foreground_wnd(lua_State *L);
+	static int set_foreground_wnd(lua_State *L);
 
 	/*
 	   Below methods should be static

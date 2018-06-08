@@ -638,6 +638,55 @@ int MacroBot::readkey(lua_State *L)
 	return 2;
 }
 
+int MacroBot::get_foreground_wnd(lua_State *L)
+{
+	HWND hwnd;
+
+	hwnd = GetForegroundWindow();
+
+	lua_pushinteger(L, (lua_Integer) hwnd);
+
+	return 1;
+}
+
+int MacroBot::set_foreground_wnd(lua_State *L)
+{
+	HWND hwnd;
+	BYTE keyState[255] = { 0 };
+
+	/* get number of arguments */
+	int n = lua_gettop(L);
+
+	if (n < 1)
+		return 0;
+
+	hwnd = (HWND) lua_tointeger(L, 1);
+
+	if (!IsWindow(hwnd))
+		return 0;
+
+	//to unlock SetForegroundWindow we need to imitate Alt pressing
+	if (GetKeyboardState((LPBYTE)&keyState))
+	{
+		if (!(keyState[VK_MENU] & 0x80))
+		{
+			keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+		}
+	}
+
+	SetForegroundWindow(hwnd);
+
+	if (GetKeyboardState((LPBYTE)&keyState))
+	{
+		if (!(keyState[VK_MENU] & 0x80))
+		{
+			keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+		}
+	}
+
+	return 0;
+}
+
 void MacroBot::regFuncs()
 {
 	lua_register(L, "left_click", mouseLeftClick);
@@ -654,6 +703,8 @@ void MacroBot::regFuncs()
 	lua_register(L, "docmd", docmd);
 	lua_register(L, "keyon", keyon);
 	lua_register(L, "readkey", readkey);
+	lua_register(L, "get_foreground_wnd", get_foreground_wnd);
+	lua_register(L, "set_foreground_wnd", set_foreground_wnd);
 }
 
 MacroBot::MacroBot()
