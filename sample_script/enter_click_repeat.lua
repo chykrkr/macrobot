@@ -1,8 +1,20 @@
 -- click and type enter repeatedly
 -- Initial cursor position is remembered and restored to that position before every click
 
+local config = require("module/config_load");
+
+-- make your own setting.lua using setting_sample.lua
+local cnf = config.load("setting.lua");
+cnf = cnf.setting
+
+--default
 twait = 3000
 tdelay = 13000
+
+if cnf ~= nil then
+	twait = cnf.twait;
+	tdelay = cnf.tdelay;
+end
 
 print("twait = ", twait, ", tdelay = ", tdelay)
 
@@ -32,7 +44,8 @@ end
 sleep(tdelay);
 
 while true do
-	set_foreground_wnd(hwnd);
+--	caues error commented out.
+--	set_foreground_wnd(hwnd);
 	setcursor(x, y);
 
 	if hwnd == get_foreground_wnd() then
